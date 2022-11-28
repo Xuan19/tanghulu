@@ -1,0 +1,16 @@
+import{createRouter, createWebHistory} from 'vue-router';
+
+const router = createRouter({
+    history: createWebHistory(),
+    route:[
+        {path: '/', redirect: '/coaches'},
+        {path: '/coaches', component: null},
+        {path: '/coaches/:id', component: null, children:[
+            {path:'contact', component:null},
+        ]},
+        {path: '/register', component: null},
+        {path: '/:notFound(.*)', component: null},
+    ]
+})
+
+export default router;
