@@ -46,7 +46,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 h2 {
   margin: 0.5rem 0;
 }
