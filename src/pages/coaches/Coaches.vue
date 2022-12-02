@@ -1,95 +1,87 @@
 <template>
   <base-dialog :show="!!error" title="An error occurred" @close="handleError">
-    <p>{{error}}</p>
+    <p>{{ error }}</p>
   </base-dialog>
-    <section>
-      <coach-filter @change-filter="setFilters"></coach-filter>
-    </section>
-    <section>
-      <base-card>
-        <div class="controls">
-          <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
-          <base-button link to="/register" v-if="!isCoach && !isLoading ">Register as Coach</base-button>
-        </div>
-        <div v-if="isLoading">
-            <base-spinner></base-spinner>
-        </div>
-        <ul v-else-if="hasCoaches">
-          <coach-item 
-            v-for="coach in filteredCoaches" 
-            :key="coach.id"
-            :id="coach.id"
-            :firstName="coach.firstName"
-            :lastName="coach.lastName"
-            :rate="coach.hourlyRate"
-            :areas="coach.areas"
-          ></coach-item>
-        </ul>
-        <h3 v-else>No coaches found</h3>
-      </base-card>
-    </section>
+  <section>
+    <coach-filter @change-filter="setFilters"></coach-filter>
+  </section>
+  <section>
+    <base-card>
+      <div class="controls">
+        <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
+        <base-button link to="/register" v-if="!isCoach && !isLoading">Register as Coach</base-button>
+      </div>
+      <div v-if="isLoading">
+        <base-spinner></base-spinner>
+      </div>
+      <ul v-else-if="(hasCoaches && !isLoading)">
+        <coach-item v-for="coach in filteredCoaches" :key="coach.id" :id="coach.id" :firstName="coach.firstName"
+          :lastName="coach.lastName" :rate="coach.hourlyRate" :areas="coach.areas"></coach-item>
+      </ul>
+      <h3 v-else>No coaches found</h3>
+    </base-card>
+  </section>
 </template>
 
 <script>
 import CoachItem from '../../components/coaches/CoachItem.vue';
 import CoachFilter from '../../components/coaches/CoachFilter.vue';
-import { handleError } from 'vue';
 
 export default {
-  components:{
+  components: {
     CoachItem,
     CoachFilter
   },
-  data(){
+  data() {
     return {
       error: null,
       isLoading: false,
-      activeFilters:{
+      activeFilters: {
         frontend: true,
         backend: true,
         career: true
       }
     }
   },
-  computed : {
-    isCoach(){
+  computed: {
+    isCoach() {
       return this.$store.getters['coaches/isCoach']
     },
     filteredCoaches() {
       const coaches = this.$store.getters['coaches/coaches'];
-      return coaches.filter(coach=>{
-        if(this.activeFilters.frontend && coach.areas.includes('frontend')){
+      return coaches.filter(coach => {
+        if (this.activeFilters.frontend && coach.areas.includes('frontend')) {
           return true;
         }
-        if(this.activeFilters.backend && coach.areas.includes('backend')){
+        if (this.activeFilters.backend && coach.areas.includes('backend')) {
           return true;
         }
-        if(this.activeFilters.career && coach.areas.includes('career')){
+        if (this.activeFilters.career && coach.areas.includes('career')) {
           return true;
         }
       });
     },
-    hasCoaches(){
+    hasCoaches() {
       return !this.loading && this.$store.getters['coaches/hasCoaches']
     }
   },
-  created(){
+  created() {
     this.loadCoaches();
   },
-  methods:{
-    setFilters(updatedFilters){
-      this.activeFilters=updatedFilters
+  methods: {
+    setFilters(updatedFilters) {
+      this.activeFilters = updatedFilters
     },
-    async loadCoaches(){
-      this.isLoading=true;
-      try{
+    async loadCoaches() {
+      this.isLoading = true;
+      try {
         await this.$store.dispatch('coaches/loadCoaches')
-      } catch(error){
+      } catch (error) {
         this.error = error.message || 'Something went wrong!'
       }
-      this.isLoading=false;
+      this.isLoading = false;
     },
-    handleError(){
+    handleError() {
       this.error = null;
     }
   }
@@ -107,5 +99,4 @@ ul {
   display: flex;
   justify-content: space-between;
 }
-
 </style>

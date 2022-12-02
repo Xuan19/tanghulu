@@ -2,10 +2,10 @@ export default{
     async registerCoach(context,data){
         const userId = context.rootGetters.userId;
         const coachData = {
-            firstName: data.first,
-            lastName: data.last,
-            description: data.desc,
-            hourlyRate:data.rate,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            description: data.description,
+            hourlyRate:data.hourlyRate,
             areas: data.areas,
         }
         
@@ -50,7 +50,5 @@ export default{
         }
 
         context.commit('setCoaches', coaches)
-
-
     }
 };

@@ -1,13 +1,56 @@
 export default{
-    contactCoach(context, payload){
-        console.log(payload)
+    async contactCoach(context, payload){
         const data = {
-            id: new Date().toISOString(),
-            coachId: payload.coachId,
             email: payload.email,
             message: payload.message
         }
-        context.commit('sendRequest', data)
+
+        const response = await fetch(`https://tanghulu-8d72e-default-rtdb.europe-west1.firebasedatabase.app/requests/${payload.coachId}.json`,{
+            method: 'POST',
+            body : JSON.stringify(data)
+        })
+
+        const responseData = await response.json();
+
+        if(!response.ok){
+              const error = new Error(responseData.message || 'fail to contact!');
+            throw error;
+        }
+
+        context.commit('sendRequest', {
+            ...data,
+            coachId : payload.coachId,
+            id: responseData.name
+        })
+    },
+
+    async loadRequests(context){
+        const coachId = context.rootGetters.userId;
+        const response = await fetch(
+            `https://tanghulu-8d72e-default-rtdb.europe-west1.firebasedatabase.app/requests/${coachId}.json`
+            );
+
+        const responseData = await response.json();
+
+        if(!response.ok){
+            const error = new Error(responseData.message || 'fail to fetch!');
+            throw error;
+        }
+
+        const requests = [];
+
+        for(const key in responseData){
+            const request = {
+                id:key,
+                coachId:coachId,
+                message: responseData[key].message,
+                email: responseData[key].email,
+            }
+
+            requests.push(request)
+        }
+
+        context.commit('setRequests', requests)
     }
     
 };
