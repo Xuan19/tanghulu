@@ -27,22 +27,23 @@ export default{
         const response = await fetch(
             `https://tanghulu-8d72e-default-rtdb.europe-west1.firebasedatabase.app/coaches.json`
             );
-        const responseDate = await response.json();
+        const responseData = await response.json();
 
         if(!response.ok){
-            //
+            const error = new Error(responseData.message || 'fail to fetch!');
+            throw error;
         }
 
         const coaches = [];
 
-        for(const key in responseDate){
+        for(const key in responseData){
             const coach = {
                 id:key,
-                firstName: responseDate[key].firstName,
-                lastName: responseDate[key].lastName,
-                description: responseDate[key].description,
-                hourlyRate:responseDate[key].hourlyRate,
-                areas: responseDate[key].areas,
+                firstName: responseData[key].firstName,
+                lastName: responseData[key].lastName,
+                description: responseData[key].description,
+                hourlyRate:responseData[key].hourlyRate,
+                areas: responseData[key].areas,
             }
 
             coaches.push(coach)
