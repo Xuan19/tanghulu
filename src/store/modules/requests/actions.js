@@ -26,8 +26,10 @@ export default{
 
     async loadRequests(context){
         const coachId = context.rootGetters.userId;
+        const token = context.rootGetters.token;
+        console.log(token)
         const response = await fetch(
-            `https://tanghulu-8d72e-default-rtdb.europe-west1.firebasedatabase.app/requests/${coachId}.json`
+            `https://tanghulu-8d72e-default-rtdb.europe-west1.firebasedatabase.app/requests/${coachId}.json?auth=` + token
             );
 
         const responseData = await response.json();

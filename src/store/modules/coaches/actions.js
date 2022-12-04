@@ -1,15 +1,18 @@
 export default{
     async registerCoach(context,data){
+        console.log(context);
         const userId = context.rootGetters.userId;
         const coachData = {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            description: data.description,
-            hourlyRate:data.hourlyRate,
+            firstName: data.first,
+            lastName: data.last,
+            description: data.desc,
+            hourlyRate:data.rate,
             areas: data.areas,
         }
-        
-        const response = await fetch(`https://tanghulu-8d72e-default-rtdb.europe-west1.firebasedatabase.app/coaches/${userId}.json`,{
+
+        const token = context.rootGetters.token;
+        //console.log(token)
+        const response = await fetch(`https://tanghulu-8d72e-default-rtdb.europe-west1.firebasedatabase.app/coaches/${userId}.json?auth=`+token,{
             method: 'PUT',
             body : JSON.stringify(coachData)
         })
