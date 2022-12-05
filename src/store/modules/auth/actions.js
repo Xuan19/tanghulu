@@ -94,6 +94,10 @@ export default {
             token: null,
             userId: null,
         })
+    },
 
+    autoLogout(context){
+        context.dispatch('logout');
+        context.dispatch('didLogout')
     }
 }
